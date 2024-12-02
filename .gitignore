@@ -34,4 +34,6 @@ build/
 
 #dotenv
 .env
-TestEnvVariable.java
+
+Test Environment
+src/test/
