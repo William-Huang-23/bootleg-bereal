@@ -30,6 +30,7 @@ public class ErrorUtils {
         errorMessages.put(17, "INVALID BIRTHDAY");
         errorMessages.put(18, "INVALID TARGET USERNAME");
         errorMessages.put(19, "TARGET USER NOT FOUND");
+        errorMessages.put(20, "INVALID CAPTION");
         errorMessages.put(99, "SYSTEM ERROR");
     }
 

@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -29,19 +30,43 @@ public class PhotoService {
     private CommentService commentService;
 
     public List<Photo> downloadAllPhoto() {
-        return photoRepository.findAll();
+        List<Photo> photoList = photoRepository.findAll();
+
+        for (Photo photo : photoList) {
+            photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+        }
+
+        return photoList;
     }
 
     public Optional<Photo> downloadPhotoByPhotoId(String photoId) {
-        return photoRepository.findById(photoId);
+        return photoRepository.findById(photoId)
+                .map(photo -> {
+                    photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+                    return photo;
+                });
     }
 
     public Optional<List<Photo>> downloadPhotoByUsername(String username) {
-        return photoRepository.findPhotoByUsername(username);
+        return photoRepository.findPhotoByUsername(username)
+                .map(photoList -> {
+                    for (Photo photo : photoList) {
+                        photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+                    }
+
+                    return photoList;
+                });
     }
 
     public Optional<List<Photo>> downloadPhotoByDate(String date) {
-        return photoRepository.findPhotoByDate(date);
+        return photoRepository.findPhotoByDate(date)
+                .map(photoList -> {
+                    for (Photo photo : photoList) {
+                        photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+                    }
+
+                    return photoList;
+                });
     }
 
     public Photo uploadPhoto(String photoId, String username, String date, String time, String caption, MultipartFile photoFile, List<Comment> commentIds) throws IOException {

@@ -227,6 +227,10 @@ public class PhotoController {
             return ErrorUtils.errorFormat(3);
         }
 
+        if (ErrorUtils.stringIsEmpty(input.get("caption"))) {
+            return ErrorUtils.errorFormat(20);
+        }
+
 //        checks if user exists
         try {
             if (userService.getUser(input.get("username").toString()).isEmpty()) {
@@ -323,6 +327,10 @@ public class PhotoController {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(input.get("username"))) {
             return ErrorUtils.errorFormat(3);
+        }
+
+        if (ErrorUtils.stringIsEmpty(input.get("caption"))) {
+            return ErrorUtils.errorFormat(20);
         }
 
 //        checks if user exists
