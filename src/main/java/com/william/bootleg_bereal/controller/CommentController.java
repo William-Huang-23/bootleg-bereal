@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/commentcontrol")
+@RequestMapping("/comment-control")
 //@CrossOrigin(origins = "*")
 public class CommentController {
     @Autowired
