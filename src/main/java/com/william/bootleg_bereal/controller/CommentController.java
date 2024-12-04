@@ -45,7 +45,7 @@ public class CommentController {
             return ErrorUtils.errorFormat(22);
         }
 
-        if (ErrorUtils.stringIsEmpty(input.get("photoUsername"))) {
+        if (ErrorUtils.stringIsEmpty(input.get("commentBody"))) {
             return ErrorUtils.errorFormat(23);
         }
 
