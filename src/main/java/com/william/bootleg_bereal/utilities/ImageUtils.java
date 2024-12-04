@@ -14,10 +14,12 @@ public class ImageUtils {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(data.length);
         byte[] temp = new byte[4*1024];
 
-        while (!deflater.finished()) {
-            int size = deflater.deflate(temp);
-            byteArrayOutputStream.write(temp, 0, size);
-        } try {
+        try {
+            while (!deflater.finished()) {
+                int size = deflater.deflate(temp);
+                byteArrayOutputStream.write(temp, 0, size);
+            }
+
             byteArrayOutputStream.close();
         } catch (Exception ignored) {
 
