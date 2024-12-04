@@ -23,8 +23,8 @@ public class CommentService {
         return commentRepository.findById(commentId);
     }
 
-    public Comment postComment(String commentId, String username, String date, String time, String commentBody, String photoUsername, String photoDate) {
-        Comment comment = commentRepository.insert(new Comment(commentId, username, date, time, commentBody));
+    public Comment postComment(String commentId, String photoId, String username, String date, String time, String commentBody, String photoUsername, String photoDate) {
+        Comment comment = commentRepository.insert(new Comment(commentId, photoId, username, date, time, commentBody));
 
         mongoTemplate.update(Photo.class)
                 .matching(Criteria.where("photoId").is(photoUsername + photoDate))

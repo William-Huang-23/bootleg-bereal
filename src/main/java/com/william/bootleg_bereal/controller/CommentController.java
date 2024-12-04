@@ -76,6 +76,7 @@ public class CommentController {
         try {
             comment = commentService.postComment(
                     input.get("photoUsername").toString() + input.get("photoDate").toString() + input.get("commentUsername").toString() + date + time,
+                    input.get("photoUsername").toString() + input.get("photoDate").toString(),
                     input.get("commentUsername").toString(),    //commentor's username
                     date,                                       //DDMMYYYY
                     time,                                       //HHMMSSMS
@@ -93,29 +94,33 @@ public class CommentController {
     }
 
     @DeleteMapping("/deletecomment")
-    public ResponseEntity<?> deleteComment(@RequestParam String commentId, @RequestParam String username, @RequestParam String date) {
+    public ResponseEntity<?> deleteComment(@RequestParam String commentId) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(commentId)) {
             return ErrorUtils.errorFormat(9);
         }
 
-        if (ErrorUtils.stringIsEmpty(username)) {
-            return ErrorUtils.errorFormat(3);
-        }
-
-        if (ErrorUtils.stringIsEmpty(date)) {
-            return ErrorUtils.errorFormat(4);
-        }
-
-        Photo photo;
         Comment comment;
 
         try {
-            photo = photoService.downloadPhotoByPhotoId(username + date).orElse(null);
             comment = commentService.getComment(commentId).orElse(null);
         } catch (Exception e) {
             return ErrorUtils.errorFormat(99);
         }
+
+        Photo photo;
+
+//        check if comment exists
+        if (comment != null) {
+            try {
+                photo = photoService.downloadPhotoByPhotoId(comment.getPhotoId()).orElse(null);
+            } catch (Exception e) {
+                return ErrorUtils.errorFormat(99);
+            }
+        } else {
+            return ErrorUtils.errorFormat(8);
+        }
+
 //        checks if the photo exists
         if (photo != null) {
             if (!photo.getCommentIds().contains(comment)) {
@@ -125,19 +130,15 @@ public class CommentController {
             return ErrorUtils.errorFormat(1);
         }
 
-        if (comment != null) {
-            try {
-                commentService.deleteComment(commentId, username + date);
-            } catch (Exception e) {
-                return ErrorUtils.errorFormat(99);
-            }
-
-            Map<String, Object> response = ErrorUtils.success();
-            response.put("data", comment);
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else  {
-            return ErrorUtils.errorFormat(8);
+        try {
+            commentService.deleteComment(commentId, comment.getPhotoId());
+        } catch (Exception e) {
+            return ErrorUtils.errorFormat(99);
         }
+
+        Map<String, Object> response = ErrorUtils.success();
+        response.put("data", comment);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
