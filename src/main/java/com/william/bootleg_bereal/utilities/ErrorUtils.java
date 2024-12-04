@@ -31,6 +31,9 @@ public class ErrorUtils {
         errorMessages.put(18, "INVALID TARGET USERNAME");
         errorMessages.put(19, "TARGET USER NOT FOUND");
         errorMessages.put(20, "INVALID CAPTION");
+        errorMessages.put(21, "INVALID PHOTO USERNAME");
+        errorMessages.put(22, "INVALID COMMENT USERNAME");
+        errorMessages.put(23, "INVALID COMMENT BODY");
         errorMessages.put(99, "SYSTEM ERROR");
     }
 

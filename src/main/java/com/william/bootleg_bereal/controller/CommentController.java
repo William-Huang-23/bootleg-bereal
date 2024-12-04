@@ -34,16 +34,24 @@ public class CommentController {
     public ResponseEntity<?> postComment(@RequestBody Map<String, Object> input) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(input.get("photoUsername"))) {
-            return ErrorUtils.errorFormat(3);
+            return ErrorUtils.errorFormat(21);
         }
 
         if (ErrorUtils.stringIsEmpty(input.get("photoDate"))) {
             return ErrorUtils.errorFormat(4);
         }
 
+        if (ErrorUtils.stringIsEmpty(input.get("commentUsername"))) {
+            return ErrorUtils.errorFormat(22);
+        }
+
+        if (ErrorUtils.stringIsEmpty(input.get("photoUsername"))) {
+            return ErrorUtils.errorFormat(23);
+        }
+
 //        checks if commenter exists
         try {
-            if (userService.getUser(input.get("username").toString()).isEmpty()) {
+            if (userService.getUser(input.get("commentUsername").toString()).isEmpty()) {
                 return ErrorUtils.errorFormat(6);
             }
         } catch (Exception e) {
@@ -67,13 +75,13 @@ public class CommentController {
 
         try {
             comment = commentService.postComment(
-                    input.get("photoUsername").toString() + input.get("photoDate").toString() + input.get("username").toString() + date + time,
-                    input.get("username").toString(),       //commentor's username
-                    date,                                   //DDMMYYYY
-                    time,                                   //HHMMSSMS
-                    input.get("commentBody").toString(),    //commentBody
-                    input.get("photoUsername").toString(),  //username of the photo's owner
-                    input.get("photoDate").toString());     //date of the photo itself DDMMYYYY
+                    input.get("photoUsername").toString() + input.get("photoDate").toString() + input.get("commentUsername").toString() + date + time,
+                    input.get("commentUsername").toString(),    //commentor's username
+                    date,                                       //DDMMYYYY
+                    time,                                       //HHMMSSMS
+                    input.get("commentBody").toString(),        //commentBody
+                    input.get("photoUsername").toString(),      //username of the photo's owner
+                    input.get("photoDate").toString());         //date of the photo itself DDMMYYYY
         } catch (Exception e) {
             return ErrorUtils.errorFormat(99);
         }
@@ -108,7 +116,7 @@ public class CommentController {
         } catch (Exception e) {
             return ErrorUtils.errorFormat(99);
         }
-
+//        checks if the photo exists
         if (photo != null) {
             if (!photo.getCommentIds().contains(comment)) {
                 return ErrorUtils.errorFormat(13);
@@ -117,7 +125,6 @@ public class CommentController {
             return ErrorUtils.errorFormat(1);
         }
 
-//        checks if the comment exists
         if (comment != null) {
             try {
                 commentService.deleteComment(commentId, username + date);
