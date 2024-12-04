@@ -17,6 +17,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.DataFormatException;
 
 @Service
 public class PhotoService {
@@ -29,7 +30,7 @@ public class PhotoService {
     @Autowired
     private CommentService commentService;
 
-    public List<Photo> downloadAllPhoto() {
+    public List<Photo> downloadAllPhoto() throws DataFormatException {
         List<Photo> photoList = photoRepository.findAll();
 
         for (Photo photo : photoList) {
@@ -42,7 +43,12 @@ public class PhotoService {
     public Optional<Photo> downloadPhotoByPhotoId(String photoId) {
         return photoRepository.findById(photoId)
                 .map(photo -> {
-                    photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+                    try {
+                        photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+                    } catch (DataFormatException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     return photo;
                 });
     }
@@ -51,7 +57,11 @@ public class PhotoService {
         return photoRepository.findPhotoByUsername(username)
                 .map(photoList -> {
                     for (Photo photo : photoList) {
-                        photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+                        try {
+                            photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+                        } catch (DataFormatException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
 
                     return photoList;
@@ -62,14 +72,18 @@ public class PhotoService {
         return photoRepository.findPhotoByDate(date)
                 .map(photoList -> {
                     for (Photo photo : photoList) {
-                        photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+                        try {
+                            photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+                        } catch (DataFormatException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
 
                     return photoList;
                 });
     }
 
-    public Photo uploadPhoto(String photoId, String username, String date, String time, String caption, MultipartFile photoFile, List<Comment> commentIds) throws IOException {
+    public Photo uploadPhoto(String photoId, String username, String date, String time, String caption, MultipartFile photoFile, List<Comment> commentIds) throws IOException, DataFormatException {
         Photo photo = photoRepository.insert(new Photo(photoId,username, date, time, caption, ImageUtils.compressImage(photoFile.getBytes()), commentIds));
 
         mongoTemplate.update(User.class)
