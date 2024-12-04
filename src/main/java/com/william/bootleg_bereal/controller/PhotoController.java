@@ -329,6 +329,10 @@ public class PhotoController {
             return ErrorUtils.errorFormat(3);
         }
 
+        if (ErrorUtils.stringIsEmpty(input.get("date"))) {
+            return ErrorUtils.errorFormat(4);
+        }
+
         if (ErrorUtils.stringIsEmpty(input.get("caption"))) {
             return ErrorUtils.errorFormat(20);
         }
