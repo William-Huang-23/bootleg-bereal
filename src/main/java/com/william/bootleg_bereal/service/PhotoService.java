@@ -77,6 +77,8 @@ public class PhotoService {
                 .apply(new Update().push("photoIds").value(photoId))
                 .first();
 
+        photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
+
         return photo;
     }
 
