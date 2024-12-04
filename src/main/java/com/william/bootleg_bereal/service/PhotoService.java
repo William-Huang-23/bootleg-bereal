@@ -30,7 +30,7 @@ public class PhotoService {
     @Autowired
     private CommentService commentService;
 
-    public List<Photo> downloadAllPhoto() throws DataFormatException {
+    public List<Photo> downloadAllPhoto() throws DataFormatException, IOException {
         List<Photo> photoList = photoRepository.findAll();
 
         for (Photo photo : photoList) {
@@ -45,7 +45,7 @@ public class PhotoService {
                 .map(photo -> {
                     try {
                         photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
-                    } catch (DataFormatException e) {
+                    } catch (DataFormatException | IOException e) {
                         throw new RuntimeException(e);
                     }
 
@@ -59,7 +59,7 @@ public class PhotoService {
                     for (Photo photo : photoList) {
                         try {
                             photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
-                        } catch (DataFormatException e) {
+                        } catch (DataFormatException | IOException e) {
                             throw new RuntimeException(e);
                         }
                     }
@@ -74,7 +74,7 @@ public class PhotoService {
                     for (Photo photo : photoList) {
                         try {
                             photo.setImageData(ImageUtils.decompressImage(photo.getImageData()));
-                        } catch (DataFormatException e) {
+                        } catch (DataFormatException | IOException e) {
                             throw new RuntimeException(e);
                         }
                     }
