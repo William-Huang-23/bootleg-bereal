@@ -23,7 +23,7 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/getallusers")
+    @GetMapping("/get-all-users")
     public ResponseEntity<?> getAllUsers() {
         List<User> userList;
 
@@ -39,7 +39,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/getuser")
+    @GetMapping("/get-user")
     public ResponseEntity<?> getUser(@RequestParam String username) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(username)) {
@@ -64,7 +64,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/createuser")
+    @PostMapping("/create-user")
     public ResponseEntity<?> createUser(@RequestBody Map<String, Object> input) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(input.get("username"))) {
@@ -117,7 +117,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteuser")
+    @DeleteMapping("/delete-user")
     public ResponseEntity<?> deleteUser(@RequestParam String username) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(username)) {
@@ -148,7 +148,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/userlogin")
+    @PutMapping("/user-login")
     public ResponseEntity<?> userLogin(@RequestParam String username, @RequestParam String password) {
         User user = userService.getUser(username).orElse(null);
 
@@ -162,7 +162,7 @@ public class UserController {
         return new ResponseEntity<>(ErrorUtils.success(), HttpStatus.OK);
     }
 
-    @PutMapping("/updateuserprofile")
+    @PutMapping("/update-user-profile")
     public ResponseEntity<?> updateUserProfile(@RequestBody Map<String, Object> input) {
         if (ErrorUtils.stringIsEmpty(input.get("username"))) {
             return ErrorUtils.errorFormat(3);
@@ -285,7 +285,7 @@ public class UserController {
 //        }
 //    }
 
-    @PutMapping("/addfriend")
+    @PutMapping("/add-friend")
     public ResponseEntity<?> addFriend(@RequestBody Map<String, Object> input) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(input.get("username"))) {
@@ -337,7 +337,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/removefriend")
+    @PutMapping("/remove-friend")
     public ResponseEntity<?> removeFriend(@RequestBody Map<String, Object> input) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(input.get("username"))) {

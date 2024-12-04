@@ -30,7 +30,7 @@ public class CommentController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/postcomment")
+    @PostMapping("/post-comment")
     public ResponseEntity<?> postComment(@RequestBody Map<String, Object> input) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(input.get("photoUsername"))) {
@@ -93,7 +93,7 @@ public class CommentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/deletecomment")
+    @DeleteMapping("/delete-comment")
     public ResponseEntity<?> deleteComment(@RequestParam String commentId) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(commentId)) {

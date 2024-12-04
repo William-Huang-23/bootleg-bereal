@@ -119,7 +119,7 @@ public class PhotoController {
 //        }
 //    }
 
-    @GetMapping("/downloadallphotos")
+    @GetMapping("/download-all-photos")
     public ResponseEntity<?> downloadAllPhotos() {
         List<Photo> photoList;
 
@@ -135,7 +135,7 @@ public class PhotoController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/downloadphotobyphotoid")
+    @GetMapping("/download-photo-by-photo-id")
     public ResponseEntity<?> downloadPhotoByPhotoId(@RequestParam String username, @RequestParam String date) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(username)) {
@@ -166,7 +166,7 @@ public class PhotoController {
         }
     }
 
-    @GetMapping("/downloadphotobyusername")
+    @GetMapping("/download-photo-by-username")
     public ResponseEntity<?> downloadPhotoByUsername(@RequestParam String username) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(username)) {
@@ -193,7 +193,7 @@ public class PhotoController {
         }
     }
 
-    @GetMapping("/downloadphotobydate")
+    @GetMapping("/download-photo-by-date")
     public ResponseEntity<?> downloadPhotoByDate(@RequestParam String date) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(date)) {
@@ -220,7 +220,7 @@ public class PhotoController {
         }
     }
 
-    @PostMapping("/uploadphoto")
+    @PostMapping("/upload-photo")
     public ResponseEntity<?> uploadPhoto(@RequestPart("info") Map<String, Object> input, @RequestPart("image") MultipartFile photoFile) throws IOException {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(input.get("username"))) {
@@ -276,7 +276,7 @@ public class PhotoController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/deletephoto")
+    @DeleteMapping("/delete-photo")
     public ResponseEntity<?> deletePhoto(@RequestParam String username, @RequestParam String date) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(username)) {
@@ -322,7 +322,7 @@ public class PhotoController {
         }
     }
 
-    @PutMapping("/updatephoto")
+    @PutMapping("/update-photo")
     public ResponseEntity<?> updatePhoto(@RequestBody Map<String, Object> input) {
 //        checks if input parameters are valid
         if (ErrorUtils.stringIsEmpty(input.get("username"))) {
