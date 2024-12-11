@@ -149,11 +149,15 @@ public class UserController {
     }
 
     @PutMapping("/user-login")
-    public ResponseEntity<?> userLogin(@RequestParam String username, @RequestParam String password) {
-        User user = userService.getUser(username).orElse(null);
+    public ResponseEntity<?> userLogin(@RequestBody Map<String, Object> input) {
+        User user = userService.getUser(input.get("username").toString()).orElse(null);
 
-        if (passwordEncoder.matches(password, user.getPassword())) {
-            return new ResponseEntity<>(ErrorUtils.success(), HttpStatus.OK);
+        if (user != null) {
+            if (passwordEncoder.matches(input.get("password").toString(), user.getPassword())) {
+                return new ResponseEntity<>(ErrorUtils.success(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(ErrorUtils.errorFormat(24), HttpStatus.OK);
+            }
         } else {
             return new ResponseEntity<>(ErrorUtils.errorFormat(24), HttpStatus.OK);
         }
