@@ -156,10 +156,10 @@ public class UserController {
             if (passwordEncoder.matches(input.get("password").toString(), user.getPassword())) {
                 return new ResponseEntity<>(ErrorUtils.success(), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(ErrorUtils.errorFormat(24), HttpStatus.OK);
+                return ErrorUtils.errorFormat(24);
             }
         } else {
-            return new ResponseEntity<>(ErrorUtils.errorFormat(24), HttpStatus.OK);
+            return ErrorUtils.errorFormat(24);
         }
     }
 
