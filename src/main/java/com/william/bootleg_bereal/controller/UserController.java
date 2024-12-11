@@ -153,13 +153,10 @@ public class UserController {
         User user = userService.getUser(username).orElse(null);
 
         if (passwordEncoder.matches(password, user.getPassword())) {
-            System.out.println("password matches!");
+            return new ResponseEntity<>(ErrorUtils.success(), HttpStatus.OK);
         } else {
-            System.out.println(passwordEncoder.encode(password));
-            System.out.println(user.getPassword());
+            return new ResponseEntity<>(ErrorUtils.errorFormat(24), HttpStatus.OK);
         }
-
-        return new ResponseEntity<>(ErrorUtils.success(), HttpStatus.OK);
     }
 
     @PutMapping("/update-user-profile")
