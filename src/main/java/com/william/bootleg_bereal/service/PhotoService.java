@@ -111,7 +111,9 @@ public class PhotoService {
         photoRepository.deleteById(photoId);
     }
 
-    public void updatePhoto(Photo photo) {
+    public void updatePhoto(Photo photo) throws IOException {
+        photo.setImageData(ImageUtils.compressImage(photo.getImageData()));
+
         photoRepository.save(photo);
     }
 }
