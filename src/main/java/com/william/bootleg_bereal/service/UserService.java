@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +32,8 @@ public class UserService {
         return userRepository.findUserByUsername(username);
     }
 
-    public User createUser(String username, String password, String name,  int age, String birthday, List<String> friendList, List<String> photoIds) {
-        return userRepository.insert(new User(username, password, name, age, birthday, friendList, photoIds));
+    public User createUser(String username, String password, String name,  int age, String birthday, List<String> friendList, List<String> friendRequestList, List<String> photoIds) {
+        return userRepository.insert(new User(username, password, name, age, birthday, friendList, friendRequestList, photoIds));
     }
 
     public void deleteUser(String username) {
@@ -50,7 +51,7 @@ public class UserService {
         userRepository.deleteById(username);
     }
 
-    public User updateUserProfile(User user) {
+    public User updateSingeUser(User user) {
         return userRepository.save(user);
     }
 
@@ -62,6 +63,14 @@ public class UserService {
         List<String> list2 = new ArrayList<>(user2.getFriendList());
         list2.add(user1.getUsername());
         user2.setFriendList(list2);
+
+        List<String> list3 = new ArrayList<>(Optional.ofNullable(user1.getFriendRequestList()).orElse(Collections.emptyList()));
+        list3.remove(user2.getUsername());
+        user1.setFriendRequestList(list3);
+
+        List<String> list4 = new ArrayList<>(Optional.ofNullable(user2.getFriendRequestList()).orElse(Collections.emptyList()));
+        list4.remove(user1.getUsername());
+        user2.setFriendRequestList(list4);
 
         userRepository.save(user1);
         userRepository.save(user2);

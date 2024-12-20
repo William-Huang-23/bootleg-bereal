@@ -106,6 +106,7 @@ public class UserController {
                     Integer.parseInt(input.get("age").toString()),  //age (int)
                     input.get("birthday").toString(),               //DDMMYYYY
                     new ArrayList<>(),                              //initialize friend list
+                    new ArrayList<>(),                              //initialize friend request
                     new ArrayList<>());                             //initialize photo id list
         } catch (Exception e) {
             return ErrorUtils.errorFormat(99);
@@ -195,7 +196,7 @@ public class UserController {
             user.setBirthday(input.get("birthday").toString());
 
             try {
-                user = userService.updateUserProfile(user);
+                user = userService.updateSingeUser(user);
             } catch (Exception e) {
                 return ErrorUtils.errorFormat(99);
             }
@@ -209,82 +210,115 @@ public class UserController {
         }
     }
 
-//    @PutMapping("/updatefriendlist")
-//    public ResponseEntity<?> updateFriendList(@RequestBody Map<String, Object> input) {
-////        checks if input parameters are valid
-//        if (ErrorUtils.stringIsEmpty(input.get("requestId"))) {
-//            return ErrorUtils.errorFormat(2);
-//        }
-//
-//        if (ErrorUtils.stringIsEmpty(input.get("username"))) {
-//            return ErrorUtils.errorFormat(3);
-//        }
-//
-//        if (ErrorUtils.stringIsEmpty(input.get("userToBeAdded"))) {
-//            return ErrorUtils.errorFormat(3);
-//        }
-//
-////        checks if username and user to be added is the same
-//        if (Objects.equals(input.get("username").toString(), input.get("userToBeAdded").toString())) {
-//            return ErrorUtils.errorFormat(10);
-//        }
-//
-//        User user;
-//        User userToBeAdded;
-//
-//        try {
-//            user = userService.getUser(input.get("username").toString()).orElse(null);
-//            userToBeAdded = userService.getUser(input.get("userToBeAdded").toString()).orElse(null);
-//        } catch (Exception e) {
-//            return ErrorUtils.errorFormat(99);
-//        }
-//
-//        if (user != null && userToBeAdded != null) {
-//            switch ((Integer) input.get("requestId")) {
-//                case 1: {
-//                    if (user.getFriendList().contains(input.get("userToBeAdded").toString())) {
-//                        return ErrorUtils.errorFormat(11);
-//                    }
-//
-//                    List<User> userList;
-//
-//                    try {
-//                        userList = userService.addFriend(user, userToBeAdded);
-//                    } catch (Exception e) {
-//                        return ErrorUtils.errorFormat(99);
-//                    }
-//
-//                    Map<String, Object> response = ErrorUtils.success();
-//                    response.put("data", userList);
-//
-//                    return new ResponseEntity<>(response, HttpStatus.OK);
-//                }
-//                case 2: {
-//                    if (!user.getFriendList().contains(input.get("userToBeAdded").toString())) {
-//                        return ErrorUtils.errorFormat(12);
-//                    }
-//
-//                    List<User> userList;
-//
-//                    try {
-//                        userList = userService.removeFriend(user, userToBeAdded);
-//                    } catch (Exception e) {
-//                        return ErrorUtils.errorFormat(99);
-//                    }
-//
-//                    Map<String, Object> response = ErrorUtils.success();
-//                    response.put("data", userList);
-//
-//                    return new ResponseEntity<>(response, HttpStatus.OK);
-//                }
-//                default: {
-//                    return ErrorUtils.errorFormat(2);
-//                }
-//            }
-//        } else {
-//            return ErrorUtils.errorFormat(6);
-//        }
-//    }
+    @PutMapping("/send-friend-request")
+    public ResponseEntity<?> sendFriendRequest(@RequestBody Map<String, Object> input) {
+//        checks if input parameters are valid
+        if (ErrorUtils.stringIsEmpty(input.get("username"))) {
+            return ErrorUtils.errorFormat(3);
+        }
+
+        if (ErrorUtils.stringIsEmpty(input.get("targetUsername"))) {
+            return ErrorUtils.errorFormat(18);
+        }
+
+//        checks if username and user to be added is the same
+        if (Objects.equals(input.get("username").toString(), input.get("targetUsername").toString())) {
+            return ErrorUtils.errorFormat(10);
+        }
+
+        User user;
+        User targetUser;
+
+        try {
+            user = userService.getUser(input.get("username").toString()).orElse(null);
+            targetUser = userService.getUser(input.get("targetUsername").toString()).orElse(null);
+        } catch (Exception e) {
+            return ErrorUtils.errorFormat(99);
+        }
+
+        if (user != null && targetUser != null) {
+            if (user.getFriendList().contains(input.get("targetUsername").toString())) {
+                return ErrorUtils.errorFormat(11);
+            }
+
+            if (user.getFriendRequestList() != null) {
+                if (user.getFriendRequestList().contains(input.get("targetUsername").toString())) {
+                    return ErrorUtils.errorFormat(26);
+                }
+            }
+
+            List<String> list = new ArrayList<>(Optional.ofNullable(targetUser.getFriendRequestList()).orElse(Collections.emptyList()));
+
+            if (list.contains(input.get("username").toString())) {
+                return ErrorUtils.errorFormat(25);
+            }
+
+            list.add(input.get("username").toString());
+            targetUser.setFriendRequestList(list);
+
+            try {
+                targetUser = userService.updateSingeUser(targetUser);
+            } catch (Exception e) {
+                return ErrorUtils.errorFormat(99);
+            }
+
+            Map<String, Object> response = ErrorUtils.success();
+            response.put("data", targetUser);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            if (user == null) {
+                return ErrorUtils.errorFormat(6);
+            } else {
+                return ErrorUtils.errorFormat(19);
+            }
+        }
+    }
+
+    @PutMapping("/remove-friend-request")
+    public ResponseEntity<?> removeFriendRequest(@RequestBody Map<String, Object> input) {
+//        checks if input parameters are valid
+        if (ErrorUtils.stringIsEmpty(input.get("username"))) {
+            return ErrorUtils.errorFormat(3);
+        }
+
+        if (ErrorUtils.stringIsEmpty(input.get("targetUsername"))) {
+            return ErrorUtils.errorFormat(18);
+        }
+
+//        checks if username and user to be added is the same
+        if (Objects.equals(input.get("username").toString(), input.get("targetUsername").toString())) {
+            return ErrorUtils.errorFormat(10);
+        }
+
+        User user;
+
+        try {
+            user = userService.getUser(input.get("username").toString()).orElse(null);
+        } catch (Exception e) {
+            return ErrorUtils.errorFormat(99);
+        }
+
+        if (user != null) {
+            List<String> list = new ArrayList<>(Optional.ofNullable(user.getFriendRequestList()).orElse(Collections.emptyList()));
+
+            list.remove(input.get("targetUsername").toString());
+            user.setFriendRequestList(list);
+
+            try {
+                user = userService.updateSingeUser(user);
+            } catch (Exception e) {
+                return ErrorUtils.errorFormat(99);
+            }
+
+            Map<String, Object> response = ErrorUtils.success();
+            response.put("data", user);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            return ErrorUtils.errorFormat(6);
+        }
+    }
 
     @PutMapping("/add-friend")
     public ResponseEntity<?> addFriend(@RequestBody Map<String, Object> input) {

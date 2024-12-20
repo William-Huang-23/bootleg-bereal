@@ -35,6 +35,8 @@ public class ErrorUtils {
         errorMessages.put(22, "INVALID COMMENT USERNAME");
         errorMessages.put(23, "INVALID COMMENT BODY");
         errorMessages.put(24, "INVALID USERNAME OR PASSWORD");
+        errorMessages.put(25, "FRIEND REQUEST ALREADY SENT");
+        errorMessages.put(26, "TARGET USER ALREADY SENT REQUEST");
         errorMessages.put(99, "SYSTEM ERROR");
     }
 

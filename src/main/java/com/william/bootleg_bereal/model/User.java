@@ -23,5 +23,6 @@ public class User {
     private int age;
     private String birthday;
     private List<String> friendList;
+    private List<String> friendRequestList;
     private List<String> photoIds;
 }
